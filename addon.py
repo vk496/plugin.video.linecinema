@@ -67,9 +67,14 @@ def Movies(url, page=1):
 def Videos(url, title, picture):
     html = getHTML(url)
     link = re.compile('file:[\s\t]*"(.+?)"').findall(html.decode('windows-1251').encode('utf-8'))[0]
-
-    addLink(title, link, picture)
-
+    qualitys = re.compile('^.*\[(.*?)\].*$').findall(link)
+	
+    if qualitys:
+        for num in qualitys[0].split(','):
+            enlace = re.sub(r'(^.*)(\[.*?\])(.*$)', r'\g<1>'+num+'\g<3>', link)
+            addLink('['+num+'p] '+title, enlace, picture)
+    else:
+        addLink(title, link, picture)
 
 def get_params():
     param=[]
